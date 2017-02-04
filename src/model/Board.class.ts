@@ -116,8 +116,6 @@ export class Board {
 
   private addSnakePart(location: Location, direction: Direction) {
     const snakePart = new SnakePart(location, direction);
-    snakePart.head = this._snakeParts.length === 0;
-    snakePart.tail = true;
     this._snakeParts.push(snakePart);
   }
 
