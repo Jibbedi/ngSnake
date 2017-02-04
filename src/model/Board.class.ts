@@ -110,16 +110,16 @@ export class Board {
   private updateSnakePartLocation(snakePart: SnakePart) {
     switch (snakePart.currentDirection) {
       case Direction.Left:
-        snakePart.location.x--;
+        snakePart.location.x = this.getNewPosition(snakePart.location.x - 1);
         break;
       case Direction.Up:
-        snakePart.location.y--;
+        snakePart.location.y = this.getNewPosition(snakePart.location.y - 1);
         break;
       case Direction.Right:
-        snakePart.location.x++;
+        snakePart.location.x = this.getNewPosition(snakePart.location.x + 1);
         break;
       case Direction.Down:
-        snakePart.location.y++;
+        snakePart.location.y = this.getNewPosition(snakePart.location.y + 1);
         break;
     }
   }
@@ -194,5 +194,11 @@ export class Board {
       this.snakeHead.currentDirection === Direction.Right && direction === Direction.Left ||
       this.snakeHead.currentDirection === Direction.Up && direction === Direction.Down ||
       this.snakeHead.currentDirection === Direction.Down && direction === Direction.Up;
+  }
+
+  private getNewPosition(position: number) {
+    if (position < 0) return this.size - 1;
+    if (position >= this.size) return 0;
+    return position;
   }
 }

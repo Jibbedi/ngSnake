@@ -223,4 +223,11 @@ describe('Board.class', () => {
 
   });
 
+  it('should let snake pass through wall', () => {
+    tickTimes(101);
+    const headPosition = board.snakeHeadLocation;
+    expect(headPosition.x).toBe(board.size - 1);
+    expect(headPosition.y).toBe(100);
+  });
+
 });
