@@ -223,6 +223,42 @@ describe('Board.class', () => {
 
   });
 
+  it('should handle new part direction correctly for direction switch on point', () => {
+    const pointLocation = new Location(99, 100);
+    const pointValue = 100;
+    const point = new Point(pointValue, pointLocation);
+    board.addPoint(point);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Up);
+    tickTimes(5);
+
+    expect(board.snakePartCount).toBe(5);
+    expect(board.directionChangerCount).toBe(0);
+
+    const tailPosition = board.snakeTailLocation;
+    expect(tailPosition.x).toBe(99);
+    expect(tailPosition.y).toBe(99);
+
+  });
+
+  it('should handle new part direction correctly for direction switch one step after point', () => {
+    const pointLocation = new Location(99, 100);
+    const pointValue = 100;
+    const point = new Point(pointValue, pointLocation);
+    board.addPoint(point);
+    tickTimes(2);
+    board.changeDirectionTo(Direction.Up);
+    tickTimes(5);
+
+    expect(board.snakePartCount).toBe(5);
+    expect(board.directionChangerCount).toBe(0);
+
+    const tailPosition = board.snakeTailLocation;
+    expect(tailPosition.x).toBe(98);
+    expect(tailPosition.y).toBe(99);
+
+  });
+
   it('should let snake pass through wall', () => {
     tickTimes(101);
     const headPosition = board.snakeHeadLocation;

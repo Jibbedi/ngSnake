@@ -68,8 +68,8 @@ export class Board {
     const snakeTailLocationBeforeTick = this.snakeTailLocation;
 
     this._snakeParts.forEach(snakePart => {
-      this.updateSnakePartLocation(snakePart);
       this.updateSnakePartDirection(snakePart);
+      this.updateSnakePartLocation(snakePart);
     });
 
     this.handleAdditionOfNewSnakeParts(snakeTailLocationBeforeTick);
@@ -91,13 +91,21 @@ export class Board {
     const location = new Location(this.snakeHeadLocation.x, this.snakeHeadLocation.y);
     const changer = new DirectionChanger(location, direction);
     this._directionChanger.push(changer);
-    this.snakeHead.currentDirection = direction;
 
     this._changeDirectionInputAcceptable = false;
   }
 
   addPoint(point: Point) {
     this._points.push(point);
+  }
+
+  private newSnakePartWillBeCreatedAtLocation(location: Location) {
+    for (let newSnakePart of this._addNewSnakeParts) {
+      if (location.matches(newSnakePart.location)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private updateSnakePartDirection(snakePart: SnakePart) {
@@ -109,7 +117,8 @@ export class Board {
       if (directionChanger.location.matches(snakePart.location)) {
         snakePart.currentDirection = directionChanger.direction;
 
-        if (snakePart === this.snakeTail) {
+        if (snakePart === this.snakeTail &&
+          !this.newSnakePartWillBeCreatedAtLocation(this.snakeTailLocation)) {
           removeIndex = index;
         }
       }
