@@ -14,7 +14,7 @@ describe('Board.class', () => {
   }
 
   beforeEach(() => {
-    board = new Board(4);
+    board = new Board(256, new Location(100, 100));
   });
 
   it('should create Board', () => {
@@ -156,7 +156,7 @@ describe('Board.class', () => {
   });
 
   it('should detect collision', () => {
-    board = new Board(5);
+    board = new Board(256, new Location(100, 100), 5);
 
     board.changeDirectionTo(Direction.Up);
     tickTimes(1);
@@ -172,7 +172,7 @@ describe('Board.class', () => {
   });
 
   it('should prevent snake from moving after collision', () => {
-    board = new Board(5);
+    board = new Board(256, new Location(100, 100), 5);
 
     board.changeDirectionTo(Direction.Up);
     tickTimes(1);

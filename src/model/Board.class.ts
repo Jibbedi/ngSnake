@@ -4,7 +4,7 @@ import {Direction} from './Direction.enum';
 import {DirectionChanger} from './DirectionChanger.class';
 import {Point} from './Point.class';
 export class Board {
-  size: number = 256;
+  size: number;
 
   public collisionLocation: Location = null;
   public pointCounter = 0;
@@ -25,6 +25,18 @@ export class Board {
     return new Location(this.snakeHead.location.x, this.snakeHead.location.y);
   }
 
+  get snakePartLocations(): Location[] {
+    return this._snakeParts.map(snakePart => {
+      return new Location(snakePart.location.x, snakePart.location.y);
+    });
+  }
+
+  get pointsLocations(): Location[] {
+    return this._points.map(point => {
+        return new Location(point.location.x, point.location.y);
+      }) || [];
+  }
+
   get snakeTailLocation(): Location {
     return new Location(this.snakeTail.location.x, this.snakeTail.location.y);
   }
@@ -42,8 +54,9 @@ export class Board {
   }
 
 
-  constructor(initialPartCount = 4) {
-    this.createInitialSnakeParts(initialPartCount);
+  constructor(size = 256, initialLocation: Location, initialPartCount = 4) {
+    this.size = size;
+    this.createInitialSnakeParts(initialLocation, initialPartCount);
   }
 
   tick() {
@@ -140,12 +153,10 @@ export class Board {
     }
   }
 
-  private createInitialSnakeParts(initialPartCount: number) {
-    let initialXPosition = 100;
-    const initialYPosition = 100;
+  private createInitialSnakeParts(initialLocation: Location, initialPartCount: number) {
 
-    for (let partIndex = 0; partIndex < initialPartCount; partIndex++, initialXPosition++) {
-      const location = new Location(initialXPosition, initialYPosition);
+    for (let partIndex = 0; partIndex < initialPartCount; partIndex++, initialLocation.x++) {
+      const location = new Location(initialLocation.x, initialLocation.y);
       this.addSnakePart(location, Direction.Left);
     }
   }
