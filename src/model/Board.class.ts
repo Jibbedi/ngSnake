@@ -5,11 +5,12 @@ import {DirectionChanger} from './DirectionChanger.class';
 export class Board {
   size: number = 256;
 
+  public collisionLocation: Location = null;
+
   private _snakeParts: SnakePart[] = [];
   private _directionChanger: DirectionChanger[] = [];
 
   private _changeDirectionInputAcceptable = true;
-
 
   get snakePartCount(): number {
     return this._snakeParts.length;
@@ -36,16 +37,23 @@ export class Board {
   }
 
 
-  constructor() {
-    this.createInitialSnakeParts();
+  constructor(initialPartCount = 4) {
+    this.createInitialSnakeParts(initialPartCount);
   }
 
   tick() {
+
+    if (this.collisionLocation) {
+      return;
+    }
+
     this._snakeParts.forEach(snakePart => {
       this.updateSnakePartLocation(snakePart);
       this.updateSnakePartDirection(snakePart);
     });
+
     this._changeDirectionInputAcceptable = true;
+    this.detectCollision();
   }
 
   changeDirectionTo(direction: Direction) {
@@ -103,15 +111,27 @@ export class Board {
     }
   }
 
-  private createInitialSnakeParts() {
+  private createInitialSnakeParts(initialPartCount: number) {
     let initialXPosition = 100;
     const initialYPosition = 100;
-    const initialPartCount = 4;
 
     for (let partIndex = 0; partIndex < initialPartCount; partIndex++, initialXPosition++) {
       const location = new Location(initialXPosition, initialYPosition);
       this.addSnakePart(location, Direction.Left);
     }
+  }
+
+  private detectCollision() {
+    this._snakeParts.forEach(snakePart => {
+      if (snakePart === this.snakeHead) {
+        return true;
+      }
+
+      if (this.snakeHeadLocation.matches(snakePart.location)) {
+        this.collisionLocation = snakePart.location;
+        return false;
+      }
+    });
   }
 
   private addSnakePart(location: Location, direction: Direction) {

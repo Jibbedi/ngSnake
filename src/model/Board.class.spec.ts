@@ -13,7 +13,7 @@ describe('Board.class', () => {
   }
 
   beforeEach(() => {
-    board = new Board();
+    board = new Board(4);
   });
 
   it('should create Board', () => {
@@ -152,6 +152,40 @@ describe('Board.class', () => {
     tickTimes(1);
     board.changeDirectionTo(Direction.Left);
     expect(board.directionChangerCount).toBe(2);
+  });
+
+  it('should detect collision', () => {
+    board = new Board(5);
+
+    board.changeDirectionTo(Direction.Up);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Right);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Down);
+    tickTimes(1);
+
+    const collisionLocation = board.collisionLocation;
+    expect(collisionLocation.x).toBe(101);
+    expect(collisionLocation.y).toBe(100);
+
+  });
+
+  it('should prevent snake from moving after collision', () => {
+    board = new Board(5);
+
+    board.changeDirectionTo(Direction.Up);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Right);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Down);
+    tickTimes(4);
+
+    const collisionLocation = board.collisionLocation;
+    const headLocation = board.snakeHeadLocation;
+    expect(collisionLocation.x).toBe(101);
+    expect(collisionLocation.y).toBe(100);
+    expect(headLocation.x).toBe(101);
+    expect(headLocation.y).toBe(100);
   });
 
 });
