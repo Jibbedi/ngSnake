@@ -1,6 +1,7 @@
 import {Board} from './Board.class';
 import {Location} from './Location.class';
 import {Direction} from './Direction.enum';
+import {Point} from './Point.class';
 
 describe('Board.class', () => {
 
@@ -186,6 +187,40 @@ describe('Board.class', () => {
     expect(collisionLocation.y).toBe(100);
     expect(headLocation.x).toBe(101);
     expect(headLocation.y).toBe(100);
+  });
+
+  it('should start with zero points', () => {
+    expect(board.pointCounter).toBe(0);
+  });
+
+  it('should update point counter after point collision', () => {
+    const pointLocation = new Location(99, 105);
+    const pointValue = 100;
+    const point = new Point(pointValue, pointLocation);
+    board.addPoint(point);
+    tickTimes(1);
+    board.changeDirectionTo(Direction.Down);
+    tickTimes(10);
+    expect(board.pointCounter).toBe(pointValue);
+  });
+
+  it('should add new part to snake at point collision after tail passed', () => {
+    const pointLocation = new Location(99, 100);
+    const pointValue = 100;
+    const point = new Point(pointValue, pointLocation);
+    board.addPoint(point);
+    tickTimes(4);
+
+    expect(board.pointCounter).toBe(pointValue);
+    let tailPosition = board.snakeTailLocation;
+    expect(tailPosition.x).toBe(99);
+    expect(tailPosition.y).toBe(100);
+
+    tickTimes(1);
+    tailPosition = board.snakeTailLocation;
+    expect(tailPosition.x).toBe(99);
+    expect(tailPosition.y).toBe(100);
+
   });
 
 });

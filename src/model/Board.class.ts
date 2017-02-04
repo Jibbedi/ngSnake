@@ -2,26 +2,31 @@ import {SnakePart} from './SnakePart.class';
 import {Location} from './Location.class';
 import {Direction} from './Direction.enum';
 import {DirectionChanger} from './DirectionChanger.class';
+import {Point} from './Point.class';
 export class Board {
   size: number = 256;
 
   public collisionLocation: Location = null;
+  public pointCounter = 0;
 
   private _snakeParts: SnakePart[] = [];
   private _directionChanger: DirectionChanger[] = [];
+  private _points: Point[] = [];
 
   private _changeDirectionInputAcceptable = true;
+
+  private _addNewSnakeParts: SnakePart[] = [];
 
   get snakePartCount(): number {
     return this._snakeParts.length;
   }
 
   get snakeHeadLocation(): Location {
-    return this.snakeHead.location;
+    return new Location(this.snakeHead.location.x, this.snakeHead.location.y);
   }
 
   get snakeTailLocation(): Location {
-    return this.snakeTail.location;
+    return new Location(this.snakeTail.location.x, this.snakeTail.location.y);
   }
 
   get directionChangerCount(): number {
@@ -47,13 +52,17 @@ export class Board {
       return;
     }
 
+    const snakeTailLocationBeforeTick = this.snakeTailLocation;
+
     this._snakeParts.forEach(snakePart => {
       this.updateSnakePartLocation(snakePart);
       this.updateSnakePartDirection(snakePart);
     });
 
+    this.handleAdditionOfNewSnakeParts(snakeTailLocationBeforeTick);
     this._changeDirectionInputAcceptable = true;
-    this.detectCollision();
+    this.detectCollisionWithSelf();
+    this.detectCollisionWithPoints();
   }
 
   changeDirectionTo(direction: Direction) {
@@ -72,6 +81,10 @@ export class Board {
     this.snakeHead.currentDirection = direction;
 
     this._changeDirectionInputAcceptable = false;
+  }
+
+  addPoint(point: Point) {
+    this._points.push(point);
   }
 
   private updateSnakePartDirection(snakePart: SnakePart) {
@@ -111,6 +124,22 @@ export class Board {
     }
   }
 
+  private handleAdditionOfNewSnakeParts(snakeTailLocation: Location) {
+    let removeAtIndex = -1;
+
+    this._addNewSnakeParts.forEach((newSnakePart, index) => {
+      if (newSnakePart.location.matches(snakeTailLocation)) {
+        this._snakeParts.push(newSnakePart);
+        removeAtIndex = index;
+        return false;
+      }
+    });
+
+    if (removeAtIndex >= 0) {
+      this._addNewSnakeParts.splice(removeAtIndex, 1);
+    }
+  }
+
   private createInitialSnakeParts(initialPartCount: number) {
     let initialXPosition = 100;
     const initialYPosition = 100;
@@ -121,7 +150,7 @@ export class Board {
     }
   }
 
-  private detectCollision() {
+  private detectCollisionWithSelf() {
     this._snakeParts.forEach(snakePart => {
       if (snakePart === this.snakeHead) {
         return true;
@@ -134,8 +163,29 @@ export class Board {
     });
   }
 
+  private detectCollisionWithPoints() {
+    let removeIndex = -1;
+
+    this._points.forEach((point, index) => {
+      if (this.snakeHeadLocation.matches(point.location)) {
+        this.pointCounter += point.value;
+
+        const newSnakePart = new SnakePart(this.snakeHeadLocation, this.snakeHead.currentDirection);
+        this._addNewSnakeParts.push(newSnakePart);
+
+        removeIndex = index;
+        return false;
+      }
+    });
+
+    if (removeIndex >= 0) {
+      this._points.splice(removeIndex, 1);
+    }
+  }
+
   private addSnakePart(location: Location, direction: Direction) {
-    const snakePart = new SnakePart(location, direction);
+    const newLocation = new Location(location.x, location.y);
+    const snakePart = new SnakePart(newLocation, direction);
     this._snakeParts.push(snakePart);
   }
 
