@@ -104,12 +104,12 @@ export class Board {
   }
 
   private createInitialSnakeParts() {
-    let initalXPosition = 100;
-    const initalYPosition = 100;
-    const initalPartCount = 4;
+    let initialXPosition = 100;
+    const initialYPosition = 100;
+    const initialPartCount = 4;
 
-    for (let partIndex = 0; partIndex < initalPartCount; partIndex++, initalXPosition++) {
-      const location = new Location(initalXPosition, initalYPosition);
+    for (let partIndex = 0; partIndex < initialPartCount; partIndex++, initialXPosition++) {
+      const location = new Location(initialXPosition, initialYPosition);
       this.addSnakePart(location, Direction.Left);
     }
   }
