@@ -1,3 +1,7 @@
-<h1>
-  {{title}}
-</h1>
+<div class="counter">
+  Points : {{board.pointCounter}}
+  Changer : {{board.directionChangerCount}}
+
+  <button (click)="restart()" *ngIf="board.collisionLocation">Restart</button>
+</div>
+<snake-board [board]="board"></snake-board>

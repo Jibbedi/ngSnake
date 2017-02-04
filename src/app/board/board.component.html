@@ -1,0 +1,3 @@
+<div *ngFor="let row of rows; let rowIndex = index"class="snake-row">
+  <div *ngFor="let column of row; let columnIndex = index" [ngClass]="{selected: shouldBeSelected(rowIndex,columnIndex), point : shouldBePoint(rowIndex, columnIndex)}" [ngStyle]="{width: tileSize, height: tileSize}" class="snake-tile">&nbsp;</div>
+</div>

@@ -1,0 +1,24 @@
+:host {
+  box-sizing: border-box;
+  border: 1px solid lightgray;
+  display: block;
+  flex-direction: column;
+}
+
+.snake-row {
+  display: flex;
+}
+
+.snake-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.selected {
+    background: black;
+  }
+
+  &.point {
+    background: red;
+  }
+}
